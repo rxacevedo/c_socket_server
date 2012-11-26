@@ -7,6 +7,7 @@
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <pthread.h>
 
 void error(const char *msg)
 {
@@ -20,6 +21,7 @@ int main(int argc, char *argv[])
      socklen_t clilen;
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
+     pthread_attr_t attr;
      int n;
      if (argc < 2) {
          fprintf(stderr,"ERROR, no port provided\n");
@@ -37,6 +39,7 @@ int main(int argc, char *argv[])
               sizeof(serv_addr)) < 0) 
               error("ERROR on binding");
      listen(sockfd,5);
+     pthread_attr_init(&attr);
      clilen = sizeof(cli_addr);
      newsockfd = accept(sockfd, 
                  (struct sockaddr *) &cli_addr, 
