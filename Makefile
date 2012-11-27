@@ -1,4 +1,6 @@
+CC=gcc
+
 CFLAGS=-Wall -g -lpthread
 
-all:
+clean:
 				rm -f server
