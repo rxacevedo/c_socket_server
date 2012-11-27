@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
   bzero((char *) &serv_addr, sizeof(serv_addr)); // Initializing serving address to 0 using 
                                                  // bzero(), pass in pointer to buffer
                                                  // and size of buffer
+
   portno = atoi(argv[1]); // Getting the port number from argv (command line argument)
   serv_addr.sin_family = AF_INET; // Setting values in serv_addr struct with lib supplied constants
   serv_addr.sin_addr.s_addr = INADDR_ANY;
