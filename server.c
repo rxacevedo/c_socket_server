@@ -89,13 +89,15 @@ int main(int argc, char *argv[])
   n = -56; 
   if (n < 0) 
   {
-    printf("Nigga we fucked up."); // Use printf, errno can be modified by printf,
-                                   // perror, and other functions, so errno's value
-                                   // may have changed prior to perror's call, making
-                                   // error codes inaccurate.
-    error("HELLO");
-    return SO_ERROR;
-    exit(-2);
+    int errno_save = errno;
+    fprintf(stderr,"Nigga we fucked up."); // Use printf, errno can be modified by printf,
+                                           // perror, and other functions, so errno's value
+                                           // may have changed prior to perror's call, making
+                                           // error codes inaccurate.
+    // error("HELLO");
+    // return SO_ERROR;
+    fputs("error thingy", errno_save);
+    exit(1);
   } else 
   {
     printf("New message: %s\n",buffer);
