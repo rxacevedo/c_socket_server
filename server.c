@@ -16,6 +16,7 @@
 /* Preprocessor Directives */
 
 #define NTHREADS 100
+#define MAX_CONNS 5
 
 /* Globals */
 
@@ -40,7 +41,9 @@ int main(int argc, char *argv[])
     exit(1);
   }
 
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  sockfd = socket(AF_INET, SOCK_STREAM, 0); // Passing in Internet Domain, socket type, and
+                                            // protocol arg (0 lets system decide, uses TCP 
+                                            // for S
 
   if (sockfd < 0)
   { 
@@ -52,6 +55,7 @@ int main(int argc, char *argv[])
                                                  // and size of buffer
 
   portno = atoi(argv[1]); // Getting the port number from argv (command line argument)
+
   serv_addr.sin_family = AF_INET; // Setting values in serv_addr struct with lib supplied constants
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(portno);
@@ -62,14 +66,15 @@ int main(int argc, char *argv[])
     error("ERROR on binding");
   }
 
-  listen(sockfd,5); // Pass in socket file descriptor and the size of the backlog queue 
-                    // (how many pending connections can be in queue while another request
-                    // is handled)
+  listen(sockfd, MAX_CONNS); // Pass in socket file descriptor and the size of the backlog queue 
+                             // (how many pending connections can be in queue while another request
+                             // is handled)
 
   pthread_attr_init(&attr); // Creating thread attributes
 
   clilen = sizeof(cli_addr);
-  newsockfd = accept(sockfd, 
+
+  newsockfd = accept(sockfd, // Block until we get a request 
       (struct sockaddr *) &cli_addr, 
       &clilen);
 
@@ -80,10 +85,11 @@ int main(int argc, char *argv[])
 
   bzero(buffer,256);
   n = read(newsockfd,buffer,255); // Blocks until there is something to be read in the socket
-  if (n < 0) error("ERROR reading from socket");
-  printf("Here is the message: %s\n",buffer);
-  n = write(newsockfd,"I got your message",18);
-  if (n < 0) error("ERROR writing to socket");
+  n = 0; 
+  if (n < 0) error("Socket read error!");
+  printf("New message: %s\n",buffer);
+  n = write(newsockfd,"Message received.",18);
+  if (n < 0) error("Socket write error!");
   close(newsockfd);
   close(sockfd);
   return 0; 
