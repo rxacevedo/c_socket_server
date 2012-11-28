@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
   }
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0); // Passing in Internet Domain, socket type, and
-  // protocol arg (0 lets system decide, uses TCP 
-  // for S
+                                            // protocol arg (0 lets system decide, uses TCP 
+                                            // for S
 
   if (sockfd < 0)
   { 
@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
   }
 
   bzero((char *) &serv_addr, sizeof(serv_addr)); // Initializing serving address to 0 using 
-  // bzero(), pass in pointer to buffer
-  // and size of buffer
+                                                 // bzero(), pass in pointer to buffer
+                                                 // and size of buffer
 
   portno = atoi(argv[1]); // Getting the port number from argv (command line argument)
 
@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
   }
 
   listen(sockfd, MAX_CONNS); // Pass in socket file descriptor and the size of the backlog queue 
-  // (how many pending connections can be in queue while another request
-  // is handled)
+                             // (how many pending connections can be in queue while another request
+                             // is handled)
 
   pthread_attr_init(&attr); // Creating thread attributes
 
@@ -89,8 +89,12 @@ int main(int argc, char *argv[])
   n = -56; 
   if (n < 0) 
   {
-    perror("Socket read error!");
-    printf("Error code: %d", errno);
+    printf("Nigga we fucked up."); // Use printf, errno can be modified by printf,
+                                   // perror, and other functions, so errno's value
+                                   // may have changed prior to perror's call, making
+                                   // error codes inaccurate.
+    error("HELLO");
+    return SO_ERROR;
     exit(-2);
   } else 
   {
