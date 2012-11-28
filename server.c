@@ -79,24 +79,30 @@ int main(int argc, char *argv[])
       (struct sockaddr *) &cli_addr, 
       &clilen);
 
+  /* SPAWN NEW THREAD HERE */
+
   if (newsockfd < 0) 
   {
     error("ERROR on accept");
   }
 
   bzero(buffer,256);
+  printf("errno prior to bogus socket creation: %s", strerror(errno));
+  perror("");
+  newsockfd = 2034032403240325023;
   n = read(newsockfd,buffer,255); // Blocks until there is something to be read in the socket
-  n = -56; 
+  printf("%d", n);
+  // n = -56; 
   if (n < 0) 
   {
     int errno_save = errno;
-    fprintf(stderr,"Nigga we fucked up."); // Use printf, errno can be modified by printf,
+    puts("Socket read error!"); // Use printf, errno can be modified by printf,
                                            // perror, and other functions, so errno's value
                                            // may have changed prior to perror's call, making
                                            // error codes inaccurate.
     // error("HELLO");
     // return SO_ERROR;
-    printf("%d", errno_save);
+    printf("Error code: %d", errno_save);
     exit(1);
   } else 
   {
