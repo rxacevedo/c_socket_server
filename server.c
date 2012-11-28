@@ -12,6 +12,7 @@
 #include <netinet/in.h>
 #include <pthread.h>
 #include <semaphore.h>
+#include <errno.h>
 
 /* Preprocessor Directives */
 
@@ -85,8 +86,13 @@ int main(int argc, char *argv[])
 
   bzero(buffer,256);
   n = read(newsockfd,buffer,255); // Blocks until there is something to be read in the socket
-  n = 0; 
-  if (n < 0) error("Socket read error!");
+  n = -56; 
+  if (n < 0) 
+  {
+    perror("Socket read error!");
+    printf("Error code: %d", errno);
+  } else exit(-1);
+
   printf("New message: %s\n",buffer);
   n = write(newsockfd,"Message received.",18);
   if (n < 0) error("Socket write error!");
