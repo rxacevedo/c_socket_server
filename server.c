@@ -79,6 +79,8 @@ int main(int argc, char *argv[])
       (struct sockaddr *) &cli_addr, 
       &clilen);
 
+  /* SPAWN NEW THREAD HERE */
+
   if (newsockfd < 0) 
   {
     error("ERROR on accept");
