@@ -43,8 +43,8 @@ int main(int argc, char *argv[])
   }
 
   sockfd = socket(AF_INET, SOCK_STREAM, 0); // Passing in Internet Domain, socket type, and
-                                            // protocol arg (0 lets system decide, uses TCP 
-                                            // for S
+  // protocol arg (0 lets system decide, uses TCP 
+  // for S
 
   if (sockfd < 0)
   { 
@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
   }
 
   bzero((char *) &serv_addr, sizeof(serv_addr)); // Initializing serving address to 0 using 
-                                                 // bzero(), pass in pointer to buffer
-                                                 // and size of buffer
+  // bzero(), pass in pointer to buffer
+  // and size of buffer
 
   portno = atoi(argv[1]); // Getting the port number from argv (command line argument)
 
@@ -68,8 +68,8 @@ int main(int argc, char *argv[])
   }
 
   listen(sockfd, MAX_CONNS); // Pass in socket file descriptor and the size of the backlog queue 
-                             // (how many pending connections can be in queue while another request
-                             // is handled)
+  // (how many pending connections can be in queue while another request
+  // is handled)
 
   pthread_attr_init(&attr); // Creating thread attributes
 
@@ -91,12 +91,14 @@ int main(int argc, char *argv[])
   {
     perror("Socket read error!");
     printf("Error code: %d", errno);
-  } else exit(-1);
-
-  printf("New message: %s\n",buffer);
-  n = write(newsockfd,"Message received.",18);
-  if (n < 0) error("Socket write error!");
-  close(newsockfd);
-  close(sockfd);
-  return 0; 
+    exit(-2);
+  } else 
+  {
+    printf("New message: %s\n",buffer);
+    n = write(newsockfd,"Message received.",18);
+    if (n < 0) error("Socket write error!");
+    close(newsockfd);
+    close(sockfd);
+    return 0;
+  } 
 }
