@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
                                            // error codes inaccurate.
     // error("HELLO");
     // return SO_ERROR;
-    fputs("error thingy", errno_save);
+    printf("%d", errno_save);
     exit(1);
   } else 
   {
