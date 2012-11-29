@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
   bzero(buffer,256);
   printf("errno prior to bogus socket creation: %s", strerror(errno));
   perror("");
-  newsockfd = 2034032403240325023;
+  newsockfd = 2034032403240325023; // Test so socket creation returns error
   n = read(newsockfd,buffer,255); // Blocks until there is something to be read in the socket
   printf("%d", n);
   // n = -56; 
