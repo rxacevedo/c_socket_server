@@ -16,6 +16,7 @@
 /* Preprocessor Directives */
 
 #define NTHREADS 100
+#define TRUE 1
 
 /* Globals */
 
@@ -39,6 +40,7 @@ void *threadalizer(void *arg)
   rw = write(fd,"I got your message",18);
   if (rw < 0) error("ERROR writing to socket");
   close(fd);
+  printf("Request for thread %lu served.\n", pthread_self());
   pthread_exit(0);
   // close(sockfd);
   // sprintf(buffer, "The thread is replying to you!");
@@ -73,8 +75,8 @@ int main(int argc, char *argv[])
                                                  // bzero(), pass in pointer to buffer
                                                  // and size of buffer
 
-  portno = atoi(argv[1]); // Getting the port number from argv (command line argument)
-  serv_addr.sin_family = AF_INET; // Setting values in serv_addr struct with lib supplied constants
+  portno = atoi(argv[1]);                        // Getting the port number from argv (command line argument)
+  serv_addr.sin_family = AF_INET;                // Setting values in serv_addr struct with lib supplied constants
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(portno);
 
@@ -84,27 +86,29 @@ int main(int argc, char *argv[])
     error("ERROR on binding");
   }
 
-  listen(sockfd,5); // Pass in socket file descriptor and the size of the backlog queue 
-                    // (how many pending connections can be in queue while another request
-                    // is handled)
+  while (TRUE) {
 
-  pthread_attr_init(&attr); // Creating thread attributes
+    listen(sockfd,5); // Pass in socket file descriptor and the size of the backlog queue 
+    // (how many pending connections can be in queue while another request
+    // is handled)
 
-  clilen = sizeof(cli_addr);
-  newsockfd = accept(sockfd, 
-      (struct sockaddr *) &cli_addr, 
-      &clilen);
+    pthread_attr_init(&attr); // Creating thread attributes
 
-  if (newsockfd < 0) 
-  {
-    error("ERROR on accept");
-  } else
-  {
-    pthread_create(&threadid, &attr, threadalizer, &newsockfd);
-    pthread_join(threadid, NULL);
-    printf("Request for thread %d served.", (int) threadid);
+    clilen = sizeof(cli_addr);
+    newsockfd = accept(sockfd, 
+        (struct sockaddr *) &cli_addr, 
+        &clilen);
+
+    if (newsockfd < 0) 
+    {
+      error("ERROR on accept");
+    } else
+    {
+      pthread_create(&threadid, &attr, threadalizer, (void *) newsockfd);
+      pthread_join(threadid, NULL);
+      printf("Back in main thread: %lu", pthread_self());
+    }
   }
-
 
   // bzero(buffer,256);
   // n = read(newsockfd,buffer,255); // Blocks until there is something to be read in the socket

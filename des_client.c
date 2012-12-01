@@ -42,8 +42,8 @@ int main()
   char* message = malloc(256); 
   // char dest_address[256] = "10.0.1.20";
 
-  pthread_t threadid;
-  pthread_attr_t attr;
+  // pthread_t threadid;
+  // pthread_attr_t attr;
 
   // server = inet_addr("10.0.1.20");
   portno = 8080;
@@ -61,7 +61,7 @@ int main()
                                                      // size of the struct)
 
   destination.sin_family = AF_INET; // Making Internets
-  destination.sin_addr.s_addr = inet_addr("192.168.1.7");
+  destination.sin_addr.s_addr = inet_addr("10.0.1.30");
 
   destination.sin_port = htons(portno); // Converting portno to network byte order
 
