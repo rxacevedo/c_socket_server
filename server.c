@@ -39,13 +39,11 @@ void *threadalizer(void *arg)
   rw = write(fd,"I got your message",18);
   if (rw < 0) error("ERROR writing to socket");
   close(fd);
-  //close(sockfd);
-
-
-
-  sprintf(buffer, "The thread is replying to you!");
-  printf("%s", buffer);
-  write(fd, buffer, strlen(buffer));
+  pthread_exit(0);
+  // close(sockfd);
+  // sprintf(buffer, "The thread is replying to you!");
+  // printf("%s", buffer);
+  // write(fd, buffer, strlen(buffer));
 }
 
 
@@ -53,11 +51,11 @@ int main(int argc, char *argv[])
 {
   int sockfd, newsockfd, portno;
   socklen_t clilen;
-  char buffer[256];
+  // char buffer[256];
   struct sockaddr_in serv_addr, cli_addr;
   pthread_attr_t attr;
   pthread_t threadid;
-  int n;
+  // int n;
 
   if (argc < 2) {
     fprintf(stderr,"ERROR, no port provided\n");
@@ -103,6 +101,8 @@ int main(int argc, char *argv[])
   } else
   {
     pthread_create(&threadid, &attr, threadalizer, &newsockfd);
+    pthread_join(threadid, NULL);
+    printf("Request for thread %d served.", (int) threadid);
   }
 
 

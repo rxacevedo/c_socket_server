@@ -16,13 +16,13 @@
 
 #define BUFFER_SIZE 256
 
-typedef struct ThreadData {
-  int sockfd;
-  char* message;
+// typedef struct {
+//   int sockfd;
+//   char* message;
+// } ThreadData
 
-
-void *threadalizer(void *arg);
-void error(const char *msg);
+// void *threadalizer(void *arg);
+// void error(const char *msg);
 
 void error(const char *msg)
 {
@@ -30,11 +30,10 @@ void error(const char *msg)
   exit(0);
 }
 
-void *threadalizer(void *arg)
-{
-  rw = 1;
-
-}
+// void *threadalizer(void *arg)
+// {
+//   rw = 1;
+// }
 
 int main()
 {
@@ -62,7 +61,7 @@ int main()
                                                      // size of the struct)
 
   destination.sin_family = AF_INET; // Making Internets
-  destination.sin_addr.s_addr = inet_addr("10.0.1.20");
+  destination.sin_addr.s_addr = inet_addr("192.168.1.7");
 
   destination.sin_port = htons(portno); // Converting portno to network byte order
 
@@ -72,9 +71,7 @@ int main()
   {
     error("Couldn't conenct...");
     exit(0);
-  } else
-  {
-    pthread_create(&threadid, &attr, threadalizer, &valu
+  } 
 
   printf("Whaddup...\n");
   bzero(message, 256);
