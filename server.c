@@ -27,6 +27,28 @@ void error(const char *msg)
   exit(1);
 }
 
+void *threadalizer(void *arg)
+{
+  int fd, rw;
+  char buffer[256];
+  fd = (int) arg;
+  bzero(buffer,256);
+  rw = read(fd ,buffer,255); // Blocks until there is something to be read in the socket
+  if (rw < 0) error("ERROR reading from socket");
+  printf("Here is the message: %s\n",buffer);
+  rw = write(fd,"I got your message",18);
+  if (rw < 0) error("ERROR writing to socket");
+  close(fd);
+  //close(sockfd);
+
+
+
+  sprintf(buffer, "The thread is replying to you!");
+  printf("%s", buffer);
+  write(fd, buffer, strlen(buffer));
+}
+
+
 int main(int argc, char *argv[])
 {
   int sockfd, newsockfd, portno;
@@ -34,7 +56,9 @@ int main(int argc, char *argv[])
   char buffer[256];
   struct sockaddr_in serv_addr, cli_addr;
   pthread_attr_t attr;
+  pthread_t threadid;
   int n;
+
   if (argc < 2) {
     fprintf(stderr,"ERROR, no port provided\n");
     exit(1);
@@ -76,15 +100,19 @@ int main(int argc, char *argv[])
   if (newsockfd < 0) 
   {
     error("ERROR on accept");
+  } else
+  {
+    pthread_create(&threadid, &attr, threadalizer, &newsockfd);
   }
 
-  bzero(buffer,256);
-  n = read(newsockfd,buffer,255); // Blocks until there is something to be read in the socket
-  if (n < 0) error("ERROR reading from socket");
-  printf("Here is the message: %s\n",buffer);
-  n = write(newsockfd,"I got your message",18);
-  if (n < 0) error("ERROR writing to socket");
-  close(newsockfd);
-  close(sockfd);
+
+  // bzero(buffer,256);
+  // n = read(newsockfd,buffer,255); // Blocks until there is something to be read in the socket
+  // if (n < 0) error("ERROR reading from socket");
+  // printf("Here is the message: %s\n",buffer);
+  // n = write(newsockfd,"I got your message",18);
+  // if (n < 0) error("ERROR writing to socket");
+  // close(newsockfd);
+  // close(sockfd);
   return 0; 
 }
