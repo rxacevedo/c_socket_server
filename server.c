@@ -21,9 +21,10 @@
 
 /* Globals */
 
-sem_t thread_sem[NTHREADS];
-pthread_t chkthread;
+// sem_t thread_sem[NTHREADS];
+// pthread_t chkthread;
 pthread_mutex_t lock;
+int serviced_count = 0;
 
 void *threadalizer(void *arg)
 {
@@ -39,16 +40,21 @@ void *threadalizer(void *arg)
   printf("Here is the message: %s\n", &buffer);
   bzero(buffer, sizeof(buffer)-1);
 
-  sprintf(buffer, "Acknowledgement from thread %x", 
-    (unsigned int) pthread_self()); // Thread IDs aren't really castable since
-                                    // they are opaque objects, but this at least
-                                    // proves some way to identify threads
+  sprintf(buffer, "Acknowledgement from thread 0x%x", pthread_self()); // Thread IDs aren't really castable
+                                                                       // since they are opaque objects, 
+                                                                       // but this at least proves some way
+                                                                       // to identify threads
 
   rw = write(fd, buffer, sizeof(buffer)-1); // Minus one so as to not read null terminator
 
   if (rw < 0) perror("ERROR writing to socket");
+
+  pthread_mutex_lock (&lock); // Critical area
+  serviced_count++;
+  pthread_mutex_unlock (&lock);
+
   close(fd);
-  printf("Request for thread %lu served.\n", pthread_self());
+  printf("Request for thread 0x%x served.\n", pthread_self());
   pthread_exit(0);
 }
 
@@ -59,7 +65,7 @@ int main(int argc, char *argv[])
   socklen_t clilen;
   struct sockaddr_in serv_addr, cli_addr;
   pthread_attr_t attr;
-  pthread_t threadid;
+  pthread_t threadid[NTHREADS];
 
   if (argc < 2) {
     fprintf(stderr,"ERROR, no port provided\n");
@@ -88,6 +94,8 @@ int main(int argc, char *argv[])
                                 // is handled)
 
     pthread_attr_init(&attr); // Creating thread attributes
+    pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // I want FIFO - test
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
     clilen = sizeof(cli_addr);
     new_sockfd = accept(serv_sockfd, (struct sockaddr *) &cli_addr, &clilen);
@@ -96,7 +104,7 @@ int main(int argc, char *argv[])
 
     pthread_create(&threadid, &attr, threadalizer, (void *) new_sockfd);
     // pthread_join(threadid, NULL);
-    printf("Back in main thread: %lu", pthread_self());
+    printf("Back in main thread: 0x%x", pthread_self());
 
   }
 
