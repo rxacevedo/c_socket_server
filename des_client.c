@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <arpa/inet.h> // For inet_addr(string arg);
 #include <sys/socket.h>
 #include <string.h>
 #include <sys/socket.h>
@@ -31,15 +30,12 @@ int main(int argc, char *argv[])
   flags.ai_socktype = SOCK_STREAM; // TCP
   flags.ai_flags = AI_PASSIVE; // get the IP for me
 
-  // Try and resolve host from argv[]
-
-  if (getaddrinfo(argv[1], argv[2], &flags, &server_info) < 0) {
+  if (getaddrinfo(argv[1], argv[2], &flags, &server_info) < 0) { // Resolve host based on CMD args
     perror("Couldn't find host");
     exit(-1);
   }
 
-  // Initialize socket
-  sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
+  sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol); // Initialize socket
 
   if (connect(sockfd, server_info->ai_addr, server_info->ai_addrlen) < 0)
   {
@@ -47,26 +43,23 @@ int main(int argc, char *argv[])
     exit(-1);
   } 
 
-  printf("Whaddup...\n");
+  printf("Connection established, please enter a message:\n");
   bzero(message, BUFFER_SIZE);
   fgets(message, BUFFER_SIZE-1, stdin);
 
-  int x = 3;
-
   rw = write(sockfd, message, strlen(message)); // Sending the contents of the buffer - writes using socket file descriptor
-  if (rw < 0) // Is this the length of the data sent out, or an stderr?
+  if (rw < 0) 
   {
     perror("Failed to send message.");
     exit(-1);
   }
 
-  // get & process response
   bzero(message, BUFFER_SIZE);
   rw = read(sockfd, message, BUFFER_SIZE); // Reading FROM socket file descriptor
-                                   // into the message buffer FOR the size 
-                                   // of message buffer MINUS ONE, otherwise
-                                   // the null terminator at the end will
-                                   // blank out the message
+                                           // into the message buffer FOR the size 
+                                           // of message buffer MINUS ONE, otherwise
+                                           // the null terminator at the end will
+                                           // blank out the message
 
   if (rw < 0)
   {

@@ -1,7 +1,8 @@
-/* A simple server in the internet domain using TCP
-   The port number is passed as an argument */
-
-/* Includes */
+/* Roberto Acevedo
+ * Multi-threaded socket server
+ * COP4610
+ * server.c
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,37 +21,48 @@
 #define QUEUE_SIZE 5
 #define BUFFER_SIZE 256
 
-/* Globals */
+/* Global counter locked via mutex */
 
 pthread_mutex_t lock;
 int counter = 0;
 
-void *threadalizer(void *arg)
+void *threadworker(void *arg)
 {
+
   int sockfd, rw; // File descriptor and 'read/write' to socket indicator
-  char *buffer;
-  sockfd = (int) arg;
+  char *buffer; // Message buffer
+  sockfd = (int) arg; // Getting sockfd from void arg passed in
 
   buffer = malloc(BUFFER_SIZE);
   bzero(buffer, BUFFER_SIZE);
+
   rw = read(sockfd, buffer, BUFFER_SIZE); // Blocks until there is something to be read in the socket
 
-  if (rw < 0) perror("ERROR reading from socket");
+  if (rw < 0)
+  {
+    perror("ERROR reading from socket");
+    pthread_exit(0);
+  }
 
-  printf("Here is the message: %s\n", buffer);
+  printf("New message received: %s\n", buffer);
   bzero(buffer, BUFFER_SIZE);
-
   sprintf(buffer, "Acknowledgement from thread 0x%x", pthread_self()); // Thread IDs aren't meaningfully 
                                                                        // castable since they are opaque 
                                                                        // objects, but this at least provides
                                                                        // some way to identify threads
 
-  rw = write(sockfd, buffer, strlen(buffer)); // Minus one so as to not read null terminator
+  rw = write(sockfd, buffer, strlen(buffer)); 
 
-  if (rw < 0) perror("ERROR writing to socket");
+  if (rw < 0)
+  {
+    perror("ERROR writing to socket");
+    pthread_exit(0);
+  }
+
+  /* Critical section */
 
   printf("Requesting mutex lock...");
-  pthread_mutex_lock (&lock); // Critical area
+  pthread_mutex_lock (&lock); 
   printf("Current counter value: %d, upping by 1...\n", counter);
   counter++;
   pthread_mutex_unlock (&lock);
@@ -59,20 +71,32 @@ void *threadalizer(void *arg)
   close(sockfd);
   printf("Request for thread 0x%x served.\n", pthread_self());
   pthread_exit(0);
+
 }
 
 
 int main(int argc, char *argv[])
 {
 
-  int serv_sockfd, new_sockfd;
-  struct addrinfo flags;
-  struct addrinfo *host_info;
-  socklen_t addr_size; // TODO: Don't need this, use addrinfo->ai_addrlen instead!
-  struct sockaddr_storage client;
-  pthread_attr_t attr;
-  pthread_t threadid[NTHREADS];
+  /* Variable declarations */
+
+  int serv_sockfd, new_sockfd; //Socket identifiers for server and incoming clients
+  struct addrinfo flags; // Params used to establish listening socket
+  struct addrinfo *host_info; // Resultset for localhost address info, set by getaddrinfo()
+
+  socklen_t addr_size; // Client address size since we use sockaddr_storage struct to store
+                       // client info coming in, not using addrinfo as done for host (local) 
+                       // by calling getaddrinfo for resolution, which stores results in 
+                       // the more convenient addrinfo struct
+
+  struct sockaddr_storage client; // Sockaddr storage struct is larger than sockaddr_in, 
+                                  // can be used both for IPv4 and IPv6
+
+  pthread_attr_t attr; // Thread attribute
+  pthread_t threadid[NTHREADS]; // Thread pool
   int i; // Thread iterator
+
+  /* Start of main program */
 
   if (argc < 2) {
     fprintf(stderr,"ERROR, no port provided\n");
@@ -92,7 +116,11 @@ int main(int argc, char *argv[])
 
   serv_sockfd = socket(host_info->ai_family, host_info->ai_socktype, host_info->ai_protocol);
 
-  if (serv_sockfd < 0) perror("ERROR opening socket");
+  if (serv_sockfd < 0)
+  {
+    perror("ERROR opening socket");
+    exit(-1);
+  }
 
   if (bind(serv_sockfd, host_info->ai_addr, host_info->ai_addrlen) < 0) 
   {
@@ -100,19 +128,15 @@ int main(int argc, char *argv[])
     exit(-1);
   } 
 
-  freeaddrinfo(host_info); // Don't need this anymore
+  freeaddrinfo(host_info); // Don't need this struct anymore
 
   pthread_attr_init(&attr); // Creating thread attributes
+  pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
+                                                               // waiting on each other
 
-  /* This apparently doesn't work (SCHED_FIFO)...*/
-     pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // I want FIFO - test
-     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
-  // printf("Server started, listening for connections...");
-
-  while (1) // TODO: This while loop will start from the beginning while my other threads are
-            // running (concurrently), need to remove and use another method of looping since
-            // this is a timing issue
+  while (1) 
   {
     listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
                                      // (how many pending connections can be in queue while another request
@@ -123,8 +147,7 @@ int main(int argc, char *argv[])
 
     if (new_sockfd < 0) perror("ERROR on accept");
 
-    i = 0;
-    pthread_create(&(threadid[i++]), &attr, &threadalizer, (void *) new_sockfd);
+    pthread_create(&(threadid[i++]), &attr, &threadworker, (void *) new_sockfd);
     sleep(0); // Giving threads some CPU time
 
   }
