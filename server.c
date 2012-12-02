@@ -44,10 +44,7 @@ void *threadworker(void *arg)
 
   printf("New message received: %s", buffer); // String already has newline
   bzero(buffer, BUFFER_SIZE);
-  sprintf(buffer, "Acknowledgement from TID:0x%x", pthread_self()); // Thread IDs aren't meaningfully 
-                                                                    // castable since they are opaque 
-                                                                    // objects, but this at least provides
-                                                                    // some way to identify threads
+  sprintf(buffer, "Acknowledgement from TID:0x%x", pthread_self()); 
 
   rw = write(sockfd, buffer, strlen(buffer)); 
 
@@ -151,9 +148,7 @@ int main(int argc, char *argv[])
 
     pthread_create(&(threadid[i++]), &attr, &threadworker, (void *) new_sockfd);
     sleep(0); // Giving threads some CPU time
-
   }
 
   return 0; 
-
 }
