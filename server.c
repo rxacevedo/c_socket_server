@@ -42,6 +42,7 @@ void *threadalizer(void *arg)
   printf("Here is the message: %s\n", buffer);
   bzero(buffer, BUFFER_SIZE);
 
+  /* This always prints the same thread ID -_____-  */
   sprintf(buffer, "Acknowledgement from thread 0x%x", pthread_self()); // Thread IDs aren't meaningfully 
                                                                        // castable since they are opaque 
                                                                        // objects, but this at least provides
@@ -51,9 +52,12 @@ void *threadalizer(void *arg)
 
   if (rw < 0) perror("ERROR writing to socket");
 
+  printf("Requesting mutex lock...");
   pthread_mutex_lock (&lock); // Critical area
+  printf("Current counter value: %d, upping by 1...\n", counter);
   counter++;
   pthread_mutex_unlock (&lock);
+  printf("Done! Mutex unlocked again, new counter value: %d\n", counter);
 
   close(sockfd);
   printf("Request for thread 0x%x served.\n", pthread_self());
@@ -129,6 +133,8 @@ int main(int argc, char *argv[])
      * risky and like a waste of resources. */
     
     pthread_attr_init(&attr); // Creating thread attributes
+
+    /* This apparently doesn't work (SCHED_FIFO)... */
     pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // I want FIFO - test
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 
