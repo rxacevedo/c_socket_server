@@ -16,58 +16,52 @@
 
 #define BUFFER_SIZE 256
 
-// typedef struct {
-//   int sockfd;
-//   char* message;
-// } ThreadData
-
-// void *threadalizer(void *arg);
-// void error(const char *msg);
-
 void error(const char *msg)
 {
   perror(msg);
   exit(0);
 }
 
-// void *threadalizer(void *arg)
-// {
-//   rw = 1;
-// }
-
-int main()
+int main(int argc, char *argv[])
 {
   int sockfd, portno, rw;
-  struct sockaddr_in destination;
-  char* message = malloc(256); 
+  struct sockaddr_in *destination;
+  struct addrinfo hints;
+  struct addrinfo *server_info;
+
+  char* message = malloc(sizeof(char)*140); // Twitter character limit 
   // char dest_address[256] = "10.0.1.20";
-
-  // pthread_t threadid;
-  // pthread_attr_t attr;
-
   // server = inet_addr("10.0.1.20");
+  
+  memset(&hints, 0, sizeof(hints)); // Clear to we're not working with garbage
+  hints.ai_family = AF_UNSPEC; // IPv4 or IPv6 doesn't matter
+  hints.ai_socktype = SOCK_STREAM; // TCP
+  hints.ai_flags = AI_PASSIVE; // get the IP for me
   portno = 8080;
 
   // Initialize socket and check it
-  if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-    error("Error opening socket");
+  // if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+  if (getaddrinfo(argv[1], "8080", &hints, &server_info) < 0) {
+    error("Couldn't find host.");
     exit(0);
   }
 
+  sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
 
   // connect to server
-  bzero((char *) &destination, sizeof(destination)); // Zero server address to prevent 
+  bzero(&destination, sizeof(&destination)); // Zero server address to prevent 
                                                      // it initializing to crap (for the
                                                      // size of the struct)
 
-  destination.sin_family = AF_INET; // Making Internets
-  destination.sin_addr.s_addr = inet_addr("10.0.1.30");
+  destination = (struct sockaddr_in *) server_info->ai_addr;
 
-  destination.sin_port = htons(portno); // Converting portno to network byte order
+  // destination.sin_family = AF_INET; // Making Internets
+  // destination.sin_addr.s_addr = inet_addr("10.0.1.30");
+  // destination.sin_addr.s_addr = inet_addr(server_info->ai_addr);
+  // destination.sin_port = htons(portno); // Converting portno to network byte order
+  // connect(sockfd, (struct sockaddr *) &destination, sizeof(destination));
 
-  connect(sockfd, (struct sockaddr *) &destination, sizeof(destination));
-
-  if (connect(sockfd, (struct sockaddr *) &destination, sizeof(destination))< 0)
+  if (connect(sockfd, server_info->ai_addr, server_info->ai_addrlen) < 0)
   {
     error("Couldn't conenct...");
     exit(0);

@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
 
   if (bind(serv_sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) perror("ERROR on binding");
 
+  printf("Server started, listening for connections...");
+
   while (TRUE) {
 
     listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
