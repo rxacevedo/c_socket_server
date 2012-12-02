@@ -111,10 +111,10 @@ int main(int argc, char *argv[])
 
   // printf("Server started, listening for connections...");
 
-  while (1) // TODO: This while loop will start from the beginning while my other threads are
-               // running (concurrently), need to remove and use another method of looping since
-               // this is a timing issue
-  {
+  // while (1) // TODO: This while loop will start from the beginning while my other threads are
+  //              // running (concurrently), need to remove and use another method of looping since
+  //              // this is a timing issue
+  // {
     listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
                                      // (how many pending connections can be in queue while another request
                                      // is handled)
@@ -128,6 +128,6 @@ int main(int argc, char *argv[])
     // pthread_join(threadid, NULL);
     // printf("Back in main thread: 0x%x\n", pthread_self());
 
-  }
+  // }
   return 0; 
 }
