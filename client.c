@@ -23,7 +23,11 @@ int main(int argc, char *argv[])
 
   char *message = malloc(BUFFER_SIZE); 
 
-  if (argc < 3) perror("Usage: ./server <hostname/address> <port/service type>");
+  if (argc < 3)
+  {
+    perror("Usage: ./server <hostname/address> <port/service type>");
+    exit(-1);
+  }
   
   memset(&flags, 0, sizeof(flags)); // Clear to we're not working with garbage
   flags.ai_family = AF_UNSPEC; // IPv4 or IPv6 doesn't matter
