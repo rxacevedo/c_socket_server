@@ -108,7 +108,9 @@ int main(int argc, char *argv[])
   {
     perror("ERROR on binding");
     exit(-1);
-  }
+  } 
+  
+  freeaddrinfo(host_info); // Don't need this anymore
 
   // printf("Server started, listening for connections...");
 
