@@ -35,19 +35,19 @@ void *threadalizer(void *arg)
 
   buffer = malloc(BUFFER_SIZE);
   bzero(buffer, BUFFER_SIZE);
-  rw = read(sockfd, buffer, sizeof(buffer)-1); // Blocks until there is something to be read in the socket
+  rw = read(sockfd, buffer, BUFFER_SIZE); // Blocks until there is something to be read in the socket
 
   if (rw < 0) perror("ERROR reading from socket");
 
   printf("Here is the message: %s\n", buffer);
-  bzero(buffer, sizeof(buffer)-1);
+  bzero(buffer, BUFFER_SIZE);
 
   sprintf(buffer, "Acknowledgement from thread 0x%x", pthread_self()); // Thread IDs aren't meaningfully 
                                                                        // castable since they are opaque 
                                                                        // objects, but this at least provides
                                                                        // some way to identify threads
 
-  rw = write(sockfd, buffer, sizeof(buffer)-1); // Minus one so as to not read null terminator
+  rw = write(sockfd, buffer, strlen(buffer)); // Minus one so as to not read null terminator
 
   if (rw < 0) perror("ERROR writing to socket");
 
