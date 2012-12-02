@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
   }
 
   // HOST INFO HERE
-  if (getaddrinfo(NULL, argv[1], &flags, &host_info) != 0)
+  if (getaddrinfo(NULL, argv[1], &flags, &host_info) < 0)
   {
     perror("Couldn't read host info for socket start");
     exit(-1);
