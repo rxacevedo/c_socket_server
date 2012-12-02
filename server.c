@@ -60,7 +60,7 @@ void *threadalizer(void *arg)
   if (rw < 0) perror("ERROR writing to socket");
 
   close(sockfd);
-/bin/bash: jk: command not found
+  printf("Request for thread 0x%x served.\n", pthread_self());
   pthread_exit(0);
 }
 
