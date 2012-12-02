@@ -140,8 +140,8 @@ int main(int argc, char *argv[])
                                      // (how many pending connections can be in queue while another request
                                      // is handled)
 
-    // addr_size = sizeof(client);
-    new_sockfd = accept(serv_sockfd, (struct sockaddr *) &client, (socklen_t *) sizeof(client));
+    addr_size = sizeof(client);
+    new_sockfd = accept(serv_sockfd, (struct sockaddr *) &client, &addr_size);
 
     if (new_sockfd < 0) 
     {
