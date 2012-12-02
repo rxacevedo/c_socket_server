@@ -35,16 +35,16 @@ int main(int argc, char *argv[])
 
   if (getaddrinfo(argv[1], argv[2], &hints, &server_info) < 0) {
     perror("Couldn't find host");
-    exit(0);
+    exit(-1);
   }
 
-  // Initialize socket and check it
+  // Initialize socket
   sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
 
   if (connect(sockfd, server_info->ai_addr, server_info->ai_addrlen) < 0)
   {
     perror("Couldn't conenct...");
-    exit(0);
+    exit(-1);
   } 
 
   printf("Whaddup...\n");
@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
   if (rw < 0) // Is this the length of the data sent out, or an stderr?
   {
     perror("Failed to send message.");
+    exit(-1);
   }
 
   // get & process response
