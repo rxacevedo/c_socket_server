@@ -1,17 +1,17 @@
-// Client
-// Roberto Acevedo
-// COP4610
-// Project
+/*
+ * Roberto Acevedo
+ * Multi-threaded socket server project
+ * COP4610
+ * client.c
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include <pthread.h>
+#include <unistd.h>
 
 #define BUFFER_SIZE 256 
 

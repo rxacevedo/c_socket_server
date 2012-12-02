@@ -1,4 +1,5 @@
-/* Roberto Acevedo
+/* 
+ * Roberto Acevedo
  * Multi-threaded socket server
  * COP4610
  * server.c
@@ -7,13 +8,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/types.h> 
-#include <sys/socket.h>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <pthread.h>
-#include <semaphore.h>
-#include <netdb.h>
+#include <unistd.h>
 
 /* Preprocessor Directives */
 
