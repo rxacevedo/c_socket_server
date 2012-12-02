@@ -42,7 +42,7 @@ void *threadworker(void *arg)
     pthread_exit(0);
   }
 
-  printf("New message received: %s\n", buffer);
+  printf("New message received: %s", buffer); // String already has newline
   bzero(buffer, BUFFER_SIZE);
   sprintf(buffer, "Acknowledgement from thread 0x%x", pthread_self()); // Thread IDs aren't meaningfully 
                                                                        // castable since they are opaque 
