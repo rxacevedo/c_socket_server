@@ -45,9 +45,9 @@ void *threadworker(void *arg)
   printf("New message received: %s", buffer); // String already has newline
   bzero(buffer, BUFFER_SIZE);
   sprintf(buffer, "Acknowledgement from TID:0x%x", pthread_self()); // Thread IDs aren't meaningfully 
-                                                                       // castable since they are opaque 
-                                                                       // objects, but this at least provides
-                                                                       // some way to identify threads
+                                                                    // castable since they are opaque 
+                                                                    // objects, but this at least provides
+                                                                    // some way to identify threads
 
   rw = write(sockfd, buffer, strlen(buffer)); 
 
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     exit(-1);
   }
 
-  memset(&flags, 0, sizeof flags);
+  memset(&flags, 0, sizeof(flags));
   flags.ai_family = AF_UNSPEC;  // use IPv4 or IPv6, whichever
   flags.ai_socktype = SOCK_STREAM; // TCP
   flags.ai_flags = AI_PASSIVE;     // fill in my IP for me
@@ -140,10 +140,14 @@ int main(int argc, char *argv[])
                                      // (how many pending connections can be in queue while another request
                                      // is handled)
 
-    addr_size = sizeof(client);
-    new_sockfd = accept(serv_sockfd, (struct sockaddr *) &client, &addr_size);
+    // addr_size = sizeof(client);
+    new_sockfd = accept(serv_sockfd, (struct sockaddr *) &client, (socklen_t *) sizeof(client));
 
-    if (new_sockfd < 0) perror("ERROR on accept");
+    if (new_sockfd < 0) 
+    {
+      perror("ERROR on accept");
+      exit(-1);
+    }
 
     pthread_create(&(threadid[i++]), &attr, &threadworker, (void *) new_sockfd);
     sleep(0); // Giving threads some CPU time

@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
   struct addrinfo flags;
   struct addrinfo *server_info;
 
-  char *message = malloc(BUFFER_SIZE); 
+  char *buffer = malloc(BUFFER_SIZE); 
 
   if (argc < 3)
   {
@@ -48,18 +48,18 @@ int main(int argc, char *argv[])
   } 
 
   printf("Connection established, please enter a message:\n");
-  bzero(message, BUFFER_SIZE);
-  fgets(message, BUFFER_SIZE-1, stdin);
+  bzero(buffer, BUFFER_SIZE);
+  fgets(buffer, BUFFER_SIZE - 1, stdin); 
 
-  rw = write(sockfd, message, strlen(message)); // Sending the contents of the buffer - writes using socket file descriptor
+  rw = write(sockfd, buffer, strlen(buffer)); // Sending the contents of the buffer - writes using socket file descriptor
   if (rw < 0) 
   {
     perror("Failed to send message.");
     exit(-1);
   }
 
-  bzero(message, BUFFER_SIZE);
-  rw = read(sockfd, message, BUFFER_SIZE); // Read the ENTIRE buffer because we don't know stlen yet 
+  bzero(buffer, BUFFER_SIZE);
+  rw = read(sockfd, buffer, BUFFER_SIZE); // Read the ENTIRE buffer because we don't know stlen yet 
 
   if (rw < 0)
   {
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-  printf("The message is: %s\n", message);
+  printf("The message is: %s\n", buffer);
 
   close(sockfd);
   return 0;
