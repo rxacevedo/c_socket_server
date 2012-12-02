@@ -104,10 +104,9 @@ int main(int argc, char *argv[])
 
   pthread_attr_init(&attr); // Creating thread attributes
 
-  /* This apparently doesn't work (SCHED_FIFO)...
+  /* This apparently doesn't work (SCHED_FIFO)...*/
      pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // I want FIFO - test
      pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-     */
 
   // printf("Server started, listening for connections...");
 
@@ -126,7 +125,7 @@ int main(int argc, char *argv[])
 
     i = 0;
     pthread_create(&(threadid[i++]), &attr, &threadalizer, (void *) new_sockfd);
-    sleep(0);
+    sleep(0); // Giving threads some CPU time
 
   }
 
