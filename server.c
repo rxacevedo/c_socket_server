@@ -42,8 +42,15 @@ void *threadalizer(void *arg)
   printf("Here is the message: %s\n", buffer);
   bzero(buffer, BUFFER_SIZE);
 
+  sprintf(buffer, "Requesting mutex lock...\n");
+  pthread_mutex_lock (&lock); // Critical area
+  sprintf(buffer, "Current counter value: %d, upping by 1...\n", counter);
+  counter++;
+  pthread_mutex_unlock (&lock);
+  sprintf(buffer, "Done! Mutex unlocked again, new counter value: %d\n", counter);
+
   /* This always prints the same thread ID -_____-  */
-  sprintf(buffer, "Acknowledgement from thread 0x%x", pthread_self()); // Thread IDs aren't meaningfully 
+  sprintf(buffer, "Acknowledgement from thread 0x%x\n", pthread_self()); // Thread IDs aren't meaningfully 
                                                                        // castable since they are opaque 
                                                                        // objects, but this at least provides
                                                                        // some way to identify threads
@@ -52,15 +59,8 @@ void *threadalizer(void *arg)
 
   if (rw < 0) perror("ERROR writing to socket");
 
-  printf("Requesting mutex lock...");
-  pthread_mutex_lock (&lock); // Critical area
-  printf("Current counter value: %d, upping by 1...\n", counter);
-  counter++;
-  pthread_mutex_unlock (&lock);
-  printf("Done! Mutex unlocked again, new counter value: %d\n", counter);
-
   close(sockfd);
-  printf("Request for thread 0x%x served.\n", pthread_self());
+/bin/bash: jk: command not found
   pthread_exit(0);
 }
 
