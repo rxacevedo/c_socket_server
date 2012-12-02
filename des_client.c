@@ -14,16 +14,15 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#define BUFFER_SIZE sizeof(char)*140
+#define BUFFER_SIZE 256 
 
 int main(int argc, char *argv[])
 {
   int sockfd, rw;
-  // struct sockaddr_in *destination;
   struct addrinfo hints;
   struct addrinfo *server_info;
 
-  char* message = malloc(sizeof(char)*140); // Twitter character limit 
+  char *message = malloc(BUFFER_SIZE); 
 
   if (argc < 2) perror("Usage: ./server <hostname/address> <port/service type>");
   
@@ -32,7 +31,7 @@ int main(int argc, char *argv[])
   hints.ai_socktype = SOCK_STREAM; // TCP
   hints.ai_flags = AI_PASSIVE; // get the IP for me
 
-  // Try and resolve host from argv[1]
+  // Try and resolve host from argv[]
 
   if (getaddrinfo(argv[1], argv[2], &hints, &server_info) < 0) {
     perror("Couldn't find host");
@@ -42,13 +41,6 @@ int main(int argc, char *argv[])
   // Initialize socket and check it
   sockfd = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
 
-  // Connect to server
-  // bzero(&destination, sizeof(&destination)); // Zero server address to prevent 
-                                             // it initializing to crap (for the
-                                             // size of the struct)
-
-  // destination = (struct sockaddr_in *) server_info->ai_addr;
-
   if (connect(sockfd, server_info->ai_addr, server_info->ai_addrlen) < 0)
   {
     perror("Couldn't conenct...");
@@ -56,8 +48,10 @@ int main(int argc, char *argv[])
   } 
 
   printf("Whaddup...\n");
-  bzero(message, 256);
-  fgets(message, 255, stdin);
+  bzero(message, BUFFER_SIZE);
+  fgets(message, BUFFER_SIZE-1, stdin);
+
+  int x = 3;
 
   rw = write(sockfd, message, strlen(message)); // Sending the contents of the buffer - writes using socket file descriptor
   if (rw < 0) // Is this the length of the data sent out, or an stderr?
@@ -66,8 +60,8 @@ int main(int argc, char *argv[])
   }
 
   // get & process response
-  bzero(message, 256);
-  rw = read(sockfd, message, 255); // Reading FROM socket file descriptor
+  bzero(message, BUFFER_SIZE);
+  rw = read(sockfd, message, BUFFER_SIZE); // Reading FROM socket file descriptor
                                    // into the message buffer FOR the size 
                                    // of message buffer MINUS ONE, otherwise
                                    // the null terminator at the end will
