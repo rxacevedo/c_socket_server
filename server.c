@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
   // HOST INFO HERE
   if (getaddrinfo(NULL, argv[1], &flags, &host_info) != 0)
   {
-    perror("Couldn't read host info for socket starti");
+    perror("Couldn't read host info for socket start");
     exit(-1);
   }
 
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 
     pthread_create(&threadid, &attr, threadalizer, (void *) new_sockfd);
     // pthread_join(threadid, NULL);
-    printf("Back in main thread: 0x%x", pthread_self());
+    printf("Back in main thread: 0x%x\n", pthread_self());
 
   }
 
