@@ -99,9 +99,9 @@ int main(int argc, char *argv[])
   }
 
   memset(&flags, 0, sizeof(flags));
-  flags.ai_family = AF_UNSPEC;  // use IPv4 or IPv6, whichever
+  flags.ai_family = AF_UNSPEC; // use IPv4 or IPv6, whichever
   flags.ai_socktype = SOCK_STREAM; // TCP
-  flags.ai_flags = AI_PASSIVE;     // fill in my IP for me
+  flags.ai_flags = AI_PASSIVE; // fill in my IP for me
 
   if (getaddrinfo(NULL, argv[1], &flags, &host_info) < 0)
   {
@@ -131,13 +131,14 @@ int main(int argc, char *argv[])
                                                                // waiting on each other
 
 
+  listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue
+                                   // (how many pending connections can be in queue while another request
+                                   // is handled)
+
+  addr_size = sizeof(client);
+
   while (1) 
   {
-    listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
-                                     // (how many pending connections can be in queue while another request
-                                     // is handled)
-
-    addr_size = sizeof(client);
     new_sockfd = accept(serv_sockfd, (struct sockaddr *) &client, &addr_size);
 
     if (new_sockfd < 0) 

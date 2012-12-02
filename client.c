@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
   if (argc < 3)
   {
-    perror("Usage: ./server <hostname/address> <port/service type>");
+    perror("Usage: ./server <hostname/address> <port>");
     exit(-1);
   }
   
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
   rw = write(sockfd, buffer, strlen(buffer)); // Sending the contents of the buffer - writes using socket file descriptor
   if (rw < 0) 
   {
-    perror("Failed to send message.");
+    perror("Failed to send message");
     exit(-1);
   }
 
@@ -63,8 +63,8 @@ int main(int argc, char *argv[])
 
   if (rw < 0)
   {
-    perror("ERROR: Can't read from socket");
-    exit(0);
+    perror("Error reading from socket");
+    exit(-1);
   }
 
   printf("The message is: %s\n", buffer);
