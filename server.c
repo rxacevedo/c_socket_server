@@ -38,13 +38,13 @@ void *threadworker(void *arg)
 
   if (rw < 0)
   {
-    perror("ERROR reading from socket");
+    perror("Error reading form socket, exiting thread");
     pthread_exit(0);
   }
 
   printf("New message received: %s", buffer); // String already has newline
   bzero(buffer, BUFFER_SIZE);
-  sprintf(buffer, "Acknowledgement from thread 0x%x", pthread_self()); // Thread IDs aren't meaningfully 
+  sprintf(buffer, "Acknowledgement from TID:0x%x", pthread_self()); // Thread IDs aren't meaningfully 
                                                                        // castable since they are opaque 
                                                                        // objects, but this at least provides
                                                                        // some way to identify threads
@@ -53,13 +53,13 @@ void *threadworker(void *arg)
 
   if (rw < 0)
   {
-    perror("ERROR writing to socket");
+    perror("Error writing to socket, exiting thread");
     pthread_exit(0);
   }
 
   /* Critical section */
 
-  printf("Requesting mutex lock...");
+  printf("Requesting mutex lock...\n");
   pthread_mutex_lock (&lock); 
   printf("Current counter value: %d, upping by 1...\n", counter);
   counter++;
@@ -67,7 +67,7 @@ void *threadworker(void *arg)
   printf("Done! Mutex unlocked again, new counter value: %d\n", counter);
 
   close(sockfd);
-  printf("Request for thread 0x%x served.\n", pthread_self());
+  printf("TID:0x%x served request, exiting thread\n", pthread_self());
   pthread_exit(0);
 
 }

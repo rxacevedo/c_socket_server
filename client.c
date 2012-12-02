@@ -55,11 +55,7 @@ int main(int argc, char *argv[])
   }
 
   bzero(message, BUFFER_SIZE);
-  rw = read(sockfd, message, BUFFER_SIZE); // Reading FROM socket file descriptor
-                                           // into the message buffer FOR the size 
-                                           // of message buffer MINUS ONE, otherwise
-                                           // the null terminator at the end will
-                                           // blank out the message
+  rw = read(sockfd, message, BUFFER_SIZE); // Read the ENTIRE buffer because we don't know stlen yet 
 
   if (rw < 0)
   {
