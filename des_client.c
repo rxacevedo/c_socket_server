@@ -19,21 +19,21 @@
 int main(int argc, char *argv[])
 {
   int sockfd, rw;
-  struct addrinfo hints;
+  struct addrinfo flags;
   struct addrinfo *server_info;
 
   char *message = malloc(BUFFER_SIZE); 
 
   if (argc < 2) perror("Usage: ./server <hostname/address> <port/service type>");
   
-  memset(&hints, 0, sizeof(hints)); // Clear to we're not working with garbage
-  hints.ai_family = AF_UNSPEC; // IPv4 or IPv6 doesn't matter
-  hints.ai_socktype = SOCK_STREAM; // TCP
-  hints.ai_flags = AI_PASSIVE; // get the IP for me
+  memset(&flags, 0, sizeof(flags)); // Clear to we're not working with garbage
+  flags.ai_family = AF_UNSPEC; // IPv4 or IPv6 doesn't matter
+  flags.ai_socktype = SOCK_STREAM; // TCP
+  flags.ai_flags = AI_PASSIVE; // get the IP for me
 
   // Try and resolve host from argv[]
 
-  if (getaddrinfo(argv[1], argv[2], &hints, &server_info) < 0) {
+  if (getaddrinfo(argv[1], argv[2], &flags, &server_info) < 0) {
     perror("Couldn't find host");
     exit(-1);
   }

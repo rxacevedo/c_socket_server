@@ -79,8 +79,13 @@ int main(int argc, char *argv[])
     exit(-1);
   }
 
+   memset(&flags, 0, sizeof flags);
+   flags.ai_family = AF_UNSPEC;  // use IPv4 or IPv6, whichever
+   flags.ai_socktype = SOCK_STREAM;
+   flags.ai_flags = AI_PASSIVE;     // fill in my IP for me
+
   // HOST INFO HERE
-  if (getaddrinfo("127.0.0.1", argv[1], &flags, &host_info) < 0)
+  if (getaddrinfo(NULL, argv[1], &flags, &host_info) < 0)
   {
     perror("Couldn't read host info for socket start");
     exit(-1);
