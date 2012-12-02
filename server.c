@@ -122,6 +122,12 @@ int main(int argc, char *argv[])
                                      // (how many pending connections can be in queue while another request
                                      // is handled)
 
+    /* MOVE THIS OUT OF WHILE LOOP, there is no sense in reinitializing
+     * these over and over again while processing other concurrent threads,
+     * I feel like it would cause issue with other threads that rely on
+     * the thread attribute since it's reinitialized repeatedly, just seems
+     * risky and like a waste of resources. */
+    
     pthread_attr_init(&attr); // Creating thread attributes
     pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // I want FIFO - test
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
