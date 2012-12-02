@@ -124,6 +124,7 @@ int main(int argc, char *argv[])
 
     if (new_sockfd < 0) perror("ERROR on accept");
 
+    i = 0;
     pthread_create(&(threadid[i++]), &attr, &threadalizer, (void *) new_sockfd);
     // pthread_join(threadid, NULL);
     // printf("Back in main thread: 0x%x\n", pthread_self());
