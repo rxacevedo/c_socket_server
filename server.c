@@ -21,6 +21,7 @@
 
 /* Global counter locked via mutex */
 
+pthread_t threadid[NTHREADS]; // Thread pool
 pthread_mutex_t lock;
 int counter = 0;
 
@@ -85,11 +86,11 @@ int main(int argc, char *argv[])
                        // the more convenient addrinfo struct
 
   struct sockaddr_storage client; // Sockaddr storage struct is larger than sockaddr_in, 
-                                  // can be used both for IPv4 and IPv6
+  // can be used both for IPv4 and IPv6
 
   pthread_attr_t attr; // Thread attribute
-  pthread_t threadid[NTHREADS]; // Thread pool
   int i; // Thread iterator
+  void *status; // Testing join
 
   /* Start of main program */
 
@@ -127,8 +128,8 @@ int main(int argc, char *argv[])
 
   pthread_attr_init(&attr); // Creating thread attributes
   pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
-                                                               // waiting on each other
+  // pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
+                                                                 // waiting on each other
 
 
   listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
@@ -148,7 +149,8 @@ int main(int argc, char *argv[])
       exit(-1);
     }
 
-    pthread_create(&(threadid[i++]), &attr, &threadworker, (void *) new_sockfd);
+    pthread_create(&threadid[i++], &attr, &threadworker, (void *) new_sockfd);
+    pthread_join(threadid[i], &status);
     // pthread_create(&threadid, &attr, &threadworker, (void *) new_sockfd);
     // sleep(0); // Giving threads some CPU time
   }
