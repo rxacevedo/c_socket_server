@@ -90,7 +90,6 @@ int main(int argc, char *argv[])
 
   pthread_attr_t attr; // Thread attribute
   int i; // Thread iterator
-  void *status; // Testing join
 
   /* Start of main program */
 
@@ -150,9 +149,7 @@ int main(int argc, char *argv[])
     }
 
     pthread_create(&threadid[i++], &attr, &threadworker, (void *) new_sockfd);
-    pthread_join(threadid[i], &status);
-    // pthread_create(&threadid, &attr, &threadworker, (void *) new_sockfd);
-    // sleep(0); // Giving threads some CPU time
+    sleep(0); // Giving threads some CPU time
   }
 
   return 0; 
