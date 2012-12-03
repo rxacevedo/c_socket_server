@@ -1,3 +1,4 @@
+#!/usr/bin/node
 var net = require('net'),
     os = require('os');
 
