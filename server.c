@@ -127,9 +127,9 @@ int main(int argc, char *argv[])
 
   freeaddrinfo(host_info); // Don't need this struct anymore
 
-  pthread_attr_init(&attr); // Creating thread attributes
-  pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+  // pthread_attr_init(&attr); // Creating thread attributes
+  // pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
+  // pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
   listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
                                    // (how many pending connections can be in queue while another request
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
       exit(-1);
     }
 
-    pthread_create(&threadid[i++], &attr, &threadworker, (void *) new_sockfd);
+    pthread_create(&threadid[i++], NULL, threadworker, (void *) new_sockfd);
     join_result = pthread_join(threadid[i], &status);
 
     if (join_result)
