@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 
     pthread_create(&(threadid[i++]), &attr, &threadworker, (void *) new_sockfd);
     // pthread_create(&threadid, &attr, &threadworker, (void *) new_sockfd);
-    sleep(0); // Giving threads some CPU time
+    // sleep(0); // Giving threads some CPU time
   }
 
   return 0; 
