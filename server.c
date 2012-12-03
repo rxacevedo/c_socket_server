@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
   // can be used both for IPv4 and IPv6
 
   pthread_attr_t attr; // Thread attribute
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
   int i; // Thread iterator
   void *status; // Testing join
 
