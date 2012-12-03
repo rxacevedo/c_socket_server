@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     perror("Usage: ./server <hostname/address> <port>");
     exit(-1);
   }
-  
+
   memset(&flags, 0, sizeof(flags)); // Clear to we're not working with garbage
   flags.ai_family = AF_UNSPEC; // IPv4 or IPv6 doesn't matter
   flags.ai_socktype = SOCK_STREAM; // TCP
