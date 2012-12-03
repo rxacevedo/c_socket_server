@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
   pthread_attr_init(&attr); // Creating thread attributes
   pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
-                                                                 // waiting on each other
+                                                               // waiting on each other
 
 
   listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 
   while (1) 
   {
-    if (i == NTHREADS)
+    if (i == NTHREADS) // So that we don't access a thread out of bounds of the thread pool
     {
       i = 0;
     }
