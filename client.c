@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
   if (argc < 3)
   {
-    fprintf(stderr, "Usage: ./server <hostname/address> <port>");
+    fprintf(stderr, "Usage: ./client <hostname/address> <port>");
     exit(-1);
   }
 
