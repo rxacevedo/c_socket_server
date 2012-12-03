@@ -90,7 +90,6 @@ int main(int argc, char *argv[])
   // can be used both for IPv4 and IPv6
 
   pthread_attr_t attr; // Thread attribute
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
   int i; // Thread iterator
   void *status; // Testing join
 
@@ -130,6 +129,7 @@ int main(int argc, char *argv[])
 
   pthread_attr_init(&attr); // Creating thread attributes
   pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
   listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
                                    // (how many pending connections can be in queue while another request
