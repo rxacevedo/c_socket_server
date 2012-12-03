@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     pthread_create(&threadid[i++], NULL, threadworker, (void *) new_sockfd);
     join_result = pthread_join(threadid[i], &status);
 
-    if (join_result)
+    if (join_result !=0)
     {
       printf("Error joining threads");
       exit(-1);
