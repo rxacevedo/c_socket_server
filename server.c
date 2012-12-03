@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
                        // the more convenient addrinfo struct
 
   struct sockaddr_storage client; // Sockaddr storage struct is larger than sockaddr_in, 
-  // can be used both for IPv4 and IPv6
+                                  // can be used both for IPv4 and IPv6
 
   pthread_attr_t attr; // Thread attribute
   int i; // Thread iterator
@@ -94,14 +94,14 @@ int main(int argc, char *argv[])
   /* Start of main program */
 
   if (argc < 2) {
-    fprintf(stderr,"ERROR, no port provided\n");
+    fprintf(stderr,"Error: no port provided\n");
     exit(-1);
   }
 
   memset(&flags, 0, sizeof(flags));
-  flags.ai_family = AF_UNSPEC; // use IPv4 or IPv6, whichever
+  flags.ai_family = AF_UNSPEC; // Use IPv4 or IPv6, whichever
   flags.ai_socktype = SOCK_STREAM; // TCP
-  flags.ai_flags = AI_PASSIVE; // fill in my IP for me
+  flags.ai_flags = AI_PASSIVE; // Set address for me 
 
   if (getaddrinfo(NULL, argv[1], &flags, &host_info) < 0)
   {
