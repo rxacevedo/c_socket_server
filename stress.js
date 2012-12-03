@@ -4,10 +4,8 @@ var open = 0;
 
 setInterval(function () {
   var socket = net.connect({
-   host: '10.0.1.20',
+   host: 'arm.robertoacevedo.net',
    port: 8080
-   // host: 'robertoacevedo.net',
-   // port: 9000
   });
   socket.on('connect', function () {
     open++;
