@@ -8,7 +8,7 @@ setInterval(function () {
    // Note: EOENT means the FS is no longer allowing node to connect,
    // re-run the script and the server will resume handling requests
    host: 'robertoacevedo.net',
-   port: 9000 
+   port: 9000
   });
   socket.on('connect', function () {
     open++;
