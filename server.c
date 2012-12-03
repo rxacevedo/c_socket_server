@@ -15,16 +15,14 @@
 
 /* Preprocessor Directives */
 
-#define NTHREADS 50
+#define NTHREADS 16
 #define QUEUE_SIZE 5
 #define BUFFER_SIZE 256
 
 /* Global counter locked via mutex */
 
-pthread_t threadid[NTHREADS]; // Thread pool
 pthread_mutex_t lock;
 int counter = 0;
-int join_result;
 
 void *threadworker(void *arg)
 {
@@ -67,7 +65,7 @@ void *threadworker(void *arg)
 
   close(sockfd);
   printf("TID:0x%x served request, exiting thread\n", pthread_self());
-  pthread_exit(pthread_self());
+  pthread_exit(0);
 
 }
 
@@ -87,11 +85,11 @@ int main(int argc, char *argv[])
                        // the more convenient addrinfo struct
 
   struct sockaddr_storage client; // Sockaddr storage struct is larger than sockaddr_in, 
-  // can be used both for IPv4 and IPv6
+                                  // can be used both for IPv4 and IPv6
 
   pthread_attr_t attr; // Thread attribute
+  pthread_t threadid[NTHREADS]; // Thread pool
   int i; // Thread iterator
-  void *status; // Testing join
 
   /* Start of main program */
 
@@ -129,7 +127,9 @@ int main(int argc, char *argv[])
 
   pthread_attr_init(&attr); // Creating thread attributes
   pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
-  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
+                                                               // waiting on each other
+
 
   listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
                                    // (how many pending connections can be in queue while another request
@@ -148,16 +148,9 @@ int main(int argc, char *argv[])
       exit(-1);
     }
 
-    pthread_create(&threadid[i++], &attr, threadworker, (void *) new_sockfd);
-    pthread_attr_destroy(&attr);
-    join_result = pthread_join(threadid[i], &status);
-
-    if (join_result !=0)
-    {
-      printf("Error joining threads");
-      exit(-1);
-    }
-
+    pthread_create(&(threadid[i++]), &attr, &threadworker, (void *) new_sockfd);
+    // pthread_create(&threadid, &attr, &threadworker, (void *) new_sockfd);
+    // sleep(0); // Giving threads some CPU time
   }
 
   return 0; 
