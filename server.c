@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 
   pthread_attr_init(&attr); // Creating thread attributes
   pthread_attr_setschedpolicy(&attr, SCHED_FIFO); // FIFO scheduling for threads 
-  // pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
+  pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED); // Don't want threads (particualrly main)
                                                                  // waiting on each other
 
 
@@ -140,6 +140,11 @@ int main(int argc, char *argv[])
 
   while (1) 
   {
+    if (i == NTHREADS)
+    {
+      i = 0;
+    }
+    
     new_sockfd = accept(serv_sockfd, (struct sockaddr *) &client, &addr_size);
 
     if (new_sockfd < 0) 
