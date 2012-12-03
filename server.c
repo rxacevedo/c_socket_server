@@ -113,13 +113,13 @@ int main(int argc, char *argv[])
 
   if (serv_sockfd < 0)
   {
-    perror("ERROR opening socket");
+    perror("Error opening socket");
     exit(-1);
   }
 
   if (bind(serv_sockfd, host_info->ai_addr, host_info->ai_addrlen) < 0) 
   {
-    perror("ERROR on binding");
+    perror("Error on binding");
     exit(-1);
   } 
 
@@ -131,11 +131,12 @@ int main(int argc, char *argv[])
                                                                // waiting on each other
 
 
-  listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue
+  listen(serv_sockfd, QUEUE_SIZE); // Pass in socket file descriptor and the size of the backlog queue 
                                    // (how many pending connections can be in queue while another request
                                    // is handled)
 
   addr_size = sizeof(client);
+  i = 0;
 
   while (1) 
   {
@@ -143,11 +144,12 @@ int main(int argc, char *argv[])
 
     if (new_sockfd < 0) 
     {
-      perror("ERROR on accept");
+      perror("Error on accept");
       exit(-1);
     }
 
     pthread_create(&(threadid[i++]), &attr, &threadworker, (void *) new_sockfd);
+    // pthread_create(&threadid, &attr, &threadworker, (void *) new_sockfd);
     sleep(0); // Giving threads some CPU time
   }
 
