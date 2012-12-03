@@ -67,7 +67,7 @@ void *threadworker(void *arg)
 
   close(sockfd);
   printf("TID:0x%x served request, exiting thread\n", pthread_self());
-  pthread_exit(0);
+  pthread_exit(pthread_self());
 
 }
 
