@@ -15,7 +15,7 @@
 
 /* Preprocessor Directives */
 
-#define NTHREADS 100
+#define NTHREADS 16
 #define QUEUE_SIZE 5
 #define BUFFER_SIZE 256
 
