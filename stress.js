@@ -19,7 +19,7 @@ setInterval(function () {
     open--;
     showOpen();
   });
-}, 20);
+}, 10);
 
 var showOpen = function () {
   process.stdout.write('\u001B[2J\u001B[0;0f');

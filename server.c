@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 
   while (1) 
   {
-    if (i == NTHREADS) // So that we don't access a thread out of bounds of the thread pool
+    if (i == NTHREADS - 1) // So that we don't access a thread out of bounds of the thread pool
     {
       i = 0;
     }
