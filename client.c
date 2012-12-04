@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     exit(-1);
   }
 
-  memset(&flags, 0, sizeof(flags)); // Clear to we're not working with garbage
+  memset(&flags, 0, sizeof(flags)); // Clear so we're not working with garbage
   flags.ai_family = AF_UNSPEC; // IPv4 or IPv6 doesn't matter
   flags.ai_socktype = SOCK_STREAM; // TCP
   flags.ai_flags = AI_PASSIVE; // get the IP for me

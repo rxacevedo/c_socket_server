@@ -7,8 +7,8 @@ setInterval(function () {
    // Substitute IP/port of machine you run server on
    // Note: EOENT means the FS is no longer allowing node to connect,
    // re-run the script and the server will resume handling requests
-   host: 'robertoacevedo.net',
-   port: 9000
+   host: '10.0.1.20',
+   port: 8080
   });
   socket.on('connect', function () {
     open++;
@@ -19,7 +19,7 @@ setInterval(function () {
     open--;
     showOpen();
   });
-}, 5);
+}, 10);
 
 var showOpen = function () {
   process.stdout.write('\u001B[2J\u001B[0;0f');
