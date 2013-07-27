@@ -2,13 +2,12 @@ var net = require('net');
 
 var open = 0;
 
+// Note: EOENT means the FS is no longer allowing node to connect,
+// re-run the script and the server will resume handling requests
 setInterval(function () {
   var socket = net.connect({
-   // Substitute IP/port of machine you run server on
-   // Note: EOENT means the FS is no longer allowing node to connect,
-   // re-run the script and the server will resume handling requests
-   host: '10.0.1.20',
-   port: 8080
+    host: process.argv[2],
+      port: process.argv[3]
   });
   socket.on('connect', function () {
     open++;

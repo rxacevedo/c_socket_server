@@ -35,6 +35,7 @@ void *threadworker(void *arg)
   buffer = malloc(BUFFER_SIZE);
   bzero(buffer, BUFFER_SIZE);
 
+  // Read BUFFER_SIZE bytes of data from sockfd (socket file descriptor) into buffer
   rw = read(sockfd, buffer, BUFFER_SIZE); // Blocks until there is something to be read in the socket
 
   if (rw < 0)
