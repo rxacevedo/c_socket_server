@@ -2,6 +2,8 @@ Roberto Acevedo
 COP4610
 USF
 
+[![Build Status](https://travis-ci.org/rxacevedo/c_socket_server.png?branch=master)](https://travis-ci.org/rxacevedo/c_socket_server)
+
 This is a C implementation of a client/server environment using POSIX threads and IPv4/IPv6
 complient sockets. It was a project that I did for an IT Operating Systems class in Fall 2012, and my first real endeavor in C. 
 
