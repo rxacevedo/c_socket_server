@@ -1,13 +1,14 @@
 CC=gcc
-
 CFLAGS=-Wall -g 
 
-ifeq ($(uname_S), Linux)
-	CCFLAGS += -pthread
+uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')
+
+ifeq ($(uname_S),Linux)
+				CFLAGS += -pthread
 endif
 
-ifeq ($(uname_S), Darwin)
-	CCFLAGS += -lpthread
+ifeq ($(uname_S),Darwin)
+				CFLAGS += -lpthread
 endif
 
 SRC=$(wildcard *.c)
