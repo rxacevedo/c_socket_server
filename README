@@ -11,7 +11,7 @@ Usage: ./server <portno>
 Each time a connection is made via the listen socket, a new thread is spawned and it reads the 
 message from the client out of the buffer. The server prints the message, clears the buffer, 
 then closes the connection and kills the thread, returning to main. The accept() call is 
-nested within a continuous while loop, so incoming connections can always be served.
+nested within a continuous while loop (inefficient I know, I need to move to an interrupt-based solution), so incoming connections can always be served.
 
 Client:
 Usage: ./client <hostname/address> <port>
