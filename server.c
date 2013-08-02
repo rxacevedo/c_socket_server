@@ -21,9 +21,9 @@
 
 /* Global counter locked via mutex */
 
+int counter = 0;
 pthread_t threadid[NTHREADS]; // Thread pool
 pthread_mutex_t lock;
-int counter = 0;
 
 void *threadworker(void *arg)
 {
